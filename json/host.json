@@ -1,0 +1,1143 @@
+## Host Sample OAS json file
+## The json file is generated from the Vmodl2 file of the vcenter's host sample using the vmware-openapi-generator as shown in https://github.com/vmware/vmware-openapi-generator.
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "host",
+    "description": "The Host provides methods to manage hosts in the vCenter Server.",
+    "termsOfService": "http://swagger.io/terms/",
+    "version": "2.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://<vcenter>/rest"
+    },
+    {
+      "url": "http://<vcenter>/rest"
+    }
+  ],
+  "tags": [],
+  "paths": {
+    "/vcenter/host": {
+      "get": {
+        "tags": [
+          "host"
+        ],
+        "summary": "Returns information about at most 2500 visible (subject to permission checks) hosts in vCenter matching the {@link FilterSpec}.",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "filter.hosts",
+            "in": "query",
+            "description": "Identifiers of hosts that can match the filter.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "filter.names",
+            "in": "query",
+            "description": "Names that hosts must have to match the filter (see {@link Summary#name}).",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "filter.folders",
+            "in": "query",
+            "description": "Folders that must contain the hosts for the hosts to match the filter.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "filter.datacenters",
+            "in": "query",
+            "description": "Datacenters that must contain the hosts for the hosts to match the filter.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "filter.standalone",
+            "in": "query",
+            "description": "If true, only hosts that are not part of a cluster can match the filter, and if false, only hosts that are are part of a cluster can match the filter.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "filter.clusters",
+            "in": "query",
+            "description": "Clusters that must contain the hosts for the hosts to match the filter.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "filter.connection_states",
+            "in": "query",
+            "description": "Connection states that a host must be in to match the filter (see {@link Summary#connectionState}.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CONNECTED",
+                  "DISCONNECTED",
+                  "NOT_RESPONDING"
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Commonly used information about the hosts matching the {@link FilterSpec}.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vcenter.host.list_result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "if more than 2500 hosts match the {@link FilterSpec}.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unable_to_allocate_resource_error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "if the user can not be authenticated.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthenticated_error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "if the user doesn't have the required privileges.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthorized_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "if the system is unable to communicate with a service to complete the request.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.service_unavailable_error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "host"
+        ],
+        "summary": "Add a new standalone host in the vCenter inventory. The newly connected host will be in connected state. The vCenter Server will verify the SSL certificate before adding the host to its inventory. In the case where the SSL certificate cannot be verified because the Certificate Authority is not recognized or the certificate is self signed, the vCenter Server will fall back to thumbprint verification mode as defined by {@link CreateSpec.ThumbprintVerification}.",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/vcenter.host_create"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The newly created identifier of the host in vCenter.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vcenter.host.create_result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "if the software version on the host is not supported.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unsupported_error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "if the user name or password for the administration account on the host are invalid.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthenticated_error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "if the user doesn't have the required privileges.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthorized_error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "if there is no folder associated with the {@name CreateSpec#folder} {@term field} in the system.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.not_found_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "if the system is unable to communicate with a service to complete the request.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.service_unavailable_error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vcenter/host/{host}": {
+      "delete": {
+        "tags": [
+          "host"
+        ],
+        "summary": "Remove a standalone host from the vCenter Server.",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "host",
+            "in": "path",
+            "description": "Identifier of the host to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {}
+          },
+          "400": {
+            "description": "if the host associated with {@param.name host} is in a vCenter cluster",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.resource_in_use_error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "if the user can not be authenticated.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthenticated_error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "if the user doesn't have the required privileges.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthorized_error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "if there is no host associated with {@param.name host} in the system.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.not_found_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "if the system is unable to communicate with a service to complete the request.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.service_unavailable_error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vcenter/host/{host}/connect": {
+      "post": {
+        "tags": [
+          "host"
+        ],
+        "summary": "Connect to the host corresponding to {@param.name host} previously added to the vCenter server.",
+        "operationId": "connect",
+        "parameters": [
+          {
+            "name": "host",
+            "in": "path",
+            "description": "Identifier of the host to be reconnected.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {}
+          },
+          "400": {
+            "description": "if the system reports an error while responding to the request.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.error_error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "if the user can not be authenticated.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthenticated_error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "if the user doesn't have the required privileges.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthorized_error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "if there is no host associated with {@param.name host} in the system.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.not_found_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "if the system is unable to communicate with a service to complete the request.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.service_unavailable_error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vcenter/host/{host}/disconnect": {
+      "post": {
+        "tags": [
+          "host"
+        ],
+        "summary": "Disconnect the host corresponding to {@param.name host} from the vCenter server",
+        "operationId": "disconnect",
+        "parameters": [
+          {
+            "name": "host",
+            "in": "path",
+            "description": "Identifier of the host to be disconnected.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {}
+          },
+          "400": {
+            "description": "if the system reports an error while responding to the request.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.error_error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "if the user can not be authenticated.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthenticated_error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "if the user doesn't have the required privileges.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.unauthorized_error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "if there is no host associated with {@param.name host} in the system.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.not_found_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "if the system is unable to communicate with a service to complete the request.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/vapi.std.errors.service_unavailable_error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "vcenter.host.list_result": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/vcenter.host.summary"
+            }
+          }
+        }
+      },
+      "vcenter.host.power_state": {
+        "type": "string",
+        "description": "The {@name PowerState} {@term enumerated type} defines the power states of a host.",
+        "enum": [
+          "POWERED_ON",
+          "POWERED_OFF",
+          "STANDBY"
+        ]
+      },
+      "vcenter.host.filter_spec": {
+        "type": "object",
+        "properties": {
+          "hosts": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Identifiers of hosts that can match the filter.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "names": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Names that hosts must have to match the filter (see {@link Summary#name}).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "folders": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Folders that must contain the hosts for the hosts to match the filter.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "datacenters": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Datacenters that must contain the hosts for the hosts to match the filter.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "standalone": {
+            "type": "boolean",
+            "description": "If true, only hosts that are not part of a cluster can match the filter, and if false, only hosts that are are part of a cluster can match the filter."
+          },
+          "clusters": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Clusters that must contain the hosts for the hosts to match the filter.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "connection_states": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Connection states that a host must be in to match the filter (see {@link Summary#connectionState}.",
+            "items": {
+              "$ref": "#/components/schemas/vcenter.host.connection_state"
+            }
+          }
+        }
+      },
+      "vcenter.host.summary": {
+        "required": [
+          "connection_state",
+          "host",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "description": "Identifier of the host."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the host."
+          },
+          "connection_state": {
+            "$ref": "#/components/schemas/vcenter.host.connection_state"
+          },
+          "power_state": {
+            "$ref": "#/components/schemas/vcenter.host.power_state"
+          }
+        }
+      },
+      "vcenter.host.connection_state": {
+        "type": "string",
+        "enum": [
+          "CONNECTED",
+          "DISCONNECTED",
+          "NOT_RESPONDING"
+        ]
+      },
+      "vcenter.host.create_spec": {
+        "required": [
+          "hostname",
+          "password",
+          "thumbprint_verification",
+          "user_name"
+        ],
+        "type": "object",
+        "properties": {
+          "hostname": {
+            "type": "string",
+            "description": "The IP address or DNS resolvable name of the host."
+          },
+          "port": {
+            "type": "integer",
+            "description": "The port of the host.",
+            "format": "int64"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "The administrator account on the host."
+          },
+          "password": {
+            "type": "string",
+            "description": "The password for the administrator account on the host.",
+            "format": "password"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Host and cluster folder in which the new standalone host should be created."
+          },
+          "thumbprint_verification": {
+            "$ref": "#/components/schemas/vcenter.host.create_spec.thumbprint_verification"
+          },
+          "thumbprint": {
+            "type": "string",
+            "description": "The thumbprint of the SSL certificate, which the host is expected to have. The thumbprint is always computed using the SHA1 hash and is the string representation of that hash in the format: xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx where, 'x' represents a hexadecimal digit."
+          },
+          "force_add": {
+            "type": "boolean",
+            "description": "Whether host should be added to the vCenter Server even if it is being managed by another vCenter Server. The original vCenterServer loses connection to the host."
+          }
+        }
+      },
+      "vcenter.host.create_spec.thumbprint_verification": {
+        "type": "string",
+        "description": "The {@name ThumbprintVerification} {@term enumerated type} defines the thumbprint verification schemes for a host's SSL certificate.",
+        "enum": [
+          "NONE",
+          "THUMBPRINT"
+        ]
+      },
+      "vcenter.host_create": {
+        "required": [
+          "spec"
+        ],
+        "type": "object",
+        "properties": {
+          "spec": {
+            "$ref": "#/components/schemas/vcenter.host.create_spec"
+          }
+        }
+      },
+      "vcenter.host.create_result": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "vapi.std.errors.already_exists": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.already_exists_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.already_exists"
+          }
+        }
+      },
+      "vapi.std.errors.already_in_desired_state": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.already_in_desired_state_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.already_in_desired_state"
+          }
+        }
+      },
+      "vapi.std.errors.error": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.error_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.error"
+          }
+        }
+      },
+      "vapi.std.errors.error.type": {
+        "type": "string",
+        "description": "Enumeration of all standard errors. Used as discriminator in protocols that have no standard means for transporting the error type, e.g. REST.",
+        "enum": [
+          "ERROR",
+          "ALREADY_EXISTS",
+          "ALREADY_IN_DESIRED_STATE",
+          "CANCELED",
+          "CONCURRENT_CHANGE",
+          "FEATURE_IN_USE",
+          "INTERNAL_SERVER_ERROR",
+          "INVALID_ARGUMENT",
+          "INVALID_ELEMENT_CONFIGURATION",
+          "INVALID_ELEMENT_TYPE",
+          "INVALID_REQUEST",
+          "NOT_ALLOWED_IN_CURRENT_STATE",
+          "NOT_FOUND",
+          "OPERATION_NOT_FOUND",
+          "RESOURCE_BUSY",
+          "RESOURCE_IN_USE",
+          "RESOURCE_INACCESSIBLE",
+          "SERVICE_UNAVAILABLE",
+          "TIMED_OUT",
+          "UNABLE_TO_ALLOCATE_RESOURCE",
+          "UNAUTHENTICATED",
+          "UNAUTHORIZED",
+          "UNEXPECTED_INPUT",
+          "UNSUPPORTED",
+          "UNVERIFIED_PEER"
+        ]
+      },
+      "vapi.std.errors.invalid_argument": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.invalid_argument_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.invalid_argument"
+          }
+        }
+      },
+      "vapi.std.errors.invalid_element_type": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.invalid_element_type_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.invalid_element_type"
+          }
+        }
+      },
+      "vapi.std.errors.not_found": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.not_found_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.not_found"
+          }
+        }
+      },
+      "vapi.std.errors.resource_in_use": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.resource_in_use_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.resource_in_use"
+          }
+        }
+      },
+      "vapi.std.errors.service_unavailable": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.service_unavailable_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.service_unavailable"
+          }
+        }
+      },
+      "vapi.std.errors.unable_to_allocate_resource": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.unable_to_allocate_resource_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.unable_to_allocate_resource"
+          }
+        }
+      },
+      "vapi.std.errors.unauthenticated": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.unauthenticated_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.unauthenticated"
+          }
+        }
+      },
+      "vapi.std.errors.unsupported_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.unsupported"
+          }
+        }
+      },
+      "vapi.std.errors.unsupported": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.unauthorized": {
+        "required": [
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Stack of one or more localizable messages for human {@term error} consumers. <p> The message at the top of the stack (first in the list) describes the {@term error} from the perspective of the {@term operation} the client invoked. Each subsequent message in the stack describes the \"cause\" of the prior message.",
+            "items": {
+              "$ref": "#/components/schemas/vapi.std.localizable_message"
+            }
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "description": "Data to facilitate clients responding to the {@term operation} reporting a standard {@term error} to indicating that it was unable to complete successfully. <p> {@term Operations} may provide data that clients can use when responding to {@term errors}.  Since the data that clients need may be specific to the context of the {@term operation} reporting the {@term error}, different {@term operations} that report the same {@term error} may provide different data in the {@term error}.  The documentation for each each {@term operation} will describe what, if any, data it provides for each {@term error} it reports. The {@link ArgumentLocations}, {@link FileLocations}, and {@link TransientIndication} {@term structures} are intended as possible values for this {@term field}.  {@link vapi.std.DynamicID} may also be useful as a value for this {@term field} (although that is not its primary purpose).  Some {@term services} may provide their own specific {@term structures} for use as the value of this {@term field} when reporting {@term errors} from their {@term operations}."
+          },
+          "error_type": {
+            "$ref": "#/components/schemas/vapi.std.errors.error.type"
+          }
+        }
+      },
+      "vapi.std.errors.unauthorized_error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/vapi.std.errors.unauthorized"
+          }
+        }
+      },
+      "vapi.std.localizable_message": {
+        "required": [
+          "args",
+          "default_message",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the localizable string or message template. <p> This identifier is typically used to retrieve a locale-specific string or message template from a message catalog."
+          },
+          "default_message": {
+            "type": "string",
+            "description": "The value of this localizable string or message template in the {@code en_US} (English) locale.  If {@link #id} refers to a message template, the default message will contain the substituted arguments. This value can be used by clients that do not need to display strings and messages in the native language of the user.  It could also be used as a fallback if a client is unable to access the appropriate message catalog."
+          },
+          "args": {
+            "type": "array",
+            "description": "Positional arguments to be substituted into the message template. This list will be empty if the message uses named arguments or has no arguments.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "basic_auth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  }
+}
